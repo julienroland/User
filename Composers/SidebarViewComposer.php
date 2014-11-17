@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Composers;
+<?php namespace \User\Composers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;

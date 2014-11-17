@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Commands;
+<?php namespace \User\Commands;
 
 use Illuminate\Support\Facades\Event;
 use Laracasts\Commander\CommandHandler;

@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Commands;
+<?php namespace User\Commands;
 
 class CompleteResetProcessCommand
 {

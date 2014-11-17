@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Http\Middleware;
+<?php namespace User\Http\Middleware;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Closure;

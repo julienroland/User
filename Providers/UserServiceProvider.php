@@ -1,6 +1,7 @@
-<?php namespace Modules\User\Providers;
+<?php namespace User\Providers;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
@@ -65,7 +66,7 @@ class UserServiceProvider extends ServiceProvider
     {
         foreach ($this->filters as $module => $filters) {
             foreach ($filters as $name => $filter) {
-                $class = "Modules\\{$module}\\Http\\Filters\\{$filter}";
+                $class = "{$module}\\Http\\Filters\\{$filter}";
 
                 $router->filter($name, $class);
             }
@@ -75,16 +76,16 @@ class UserServiceProvider extends ServiceProvider
 	private function registerBindings()
 	{
 		$this->app->bind(
-			'Modules\User\Repositories\UserRepository',
-			'Modules\User\Repositories\Sentinel\SentinelUserRepository'
+			'User\Repositories\UserRepository',
+			'User\\Repositories\\'.Config::get('User::userdriver.driver').'\\'.Config::get('User::userdriver.driver').'UserRepository'
 		);
 		$this->app->bind(
-			'Modules\User\Repositories\RoleRepository',
-			'Modules\User\Repositories\Sentinel\SentinelRoleRepository'
+			'User\Repositories\RoleRepository',
+			'User\\Repositories\\'.Config::get('User::userdriver.driver').'\\'.Config::get('User::userdriver.driver').'RoleRepository'
 		);
         $this->app->bind(
-            'Modules\Core\Contracts\Authentication',
-            'Modules\User\Repositories\Sentinel\SentinelAuthentication'
+            'Core\Contracts\Authentication',
+            'User\\Repositories\\'.Config::get('User::userdriver.driver').'\\'.Config::get('User::userdriver.driver').'Authentication'
         );
 	}
 

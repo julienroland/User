@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Exceptions;
+<?php namespace \User\Exceptions;
 
 use Exception;
 

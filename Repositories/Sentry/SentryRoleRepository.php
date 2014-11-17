@@ -1,19 +1,11 @@
-<?php namespace User\Repositories\Sentinel;
+<?php namespace User\Repositories\Sentry;
 
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+
+use Cartalyst\Sentry\Facades\CI\Sentry;
 use User\Repositories\RoleRepository;
 
-class SentinelRoleRepository implements RoleRepository
+class SentryRoleRepository implements RoleRepository
 {
-    /**
-     * @var \Cartalyst\Sentinel\Roles\EloquentRole
-     */
-    protected $role;
-
-    public function __construct()
-    {
-        $this->role = Sentinel::getRoleRepository()->createModel();
-    }
 
     /**
      * Return all the roles
@@ -21,7 +13,7 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function all()
     {
-        return $this->role->all();
+        return Sentry::findAllGroups();
     }
 
     /**
@@ -30,7 +22,7 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function create($data)
     {
-        $this->role->create($data);
+        Sentry::createGroup($data);
     }
 
     /**
@@ -40,7 +32,7 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function find($id)
     {
-        return $this->role->find($id);
+        return Sentry::findGroupById($id);
     }
 
     /**
@@ -51,9 +43,9 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function update($id, $data)
     {
-        $role = $this->role->find($id);
+        $role = Sentry::findGroupById($id);
 
-        $role->fill($data);
+        $role->permissions($data);
 
         $role->save();
     }
@@ -65,7 +57,7 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function delete($id)
     {
-        $role = $this->role->find($id);
+        $role = Sentry::findGroupById($id);
 
         return $role->delete();
     }
@@ -77,6 +69,6 @@ class SentinelRoleRepository implements RoleRepository
      */
     public function findByName($name)
     {
-        return Sentinel::findRoleByName($name);
+        return Sentry::findGroupByName($name);
     }
 }

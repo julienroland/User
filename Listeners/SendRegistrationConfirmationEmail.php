@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Listeners;
+<?php namespace User\Listeners;
 
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;

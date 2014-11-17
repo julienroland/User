@@ -1,10 +1,10 @@
-<?php namespace Modules\User\Commands;
+<?php namespace User\Commands;
 
 use Laracasts\Commander\CommandHandler;
-use Modules\User\Exceptions\InvalidOrExpiredResetCode;
-use Modules\User\Exceptions\UserNotFoundException;
-use Modules\User\Repositories\AuthenticationRepository;
-use Modules\User\Repositories\UserRepository;
+use User\Exceptions\InvalidOrExpiredResetCode;
+use User\Exceptions\UserNotFoundException;
+use User\Repositories\AuthenticationRepository;
+use User\Repositories\UserRepository;
 
 class CompleteResetProcessCommandHandler implements CommandHandler
 {

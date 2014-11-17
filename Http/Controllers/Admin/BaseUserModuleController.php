@@ -1,6 +1,6 @@
-<?php namespace Modules\User\Http\Controllers\Admin;
+<?php namespace User\Http\Controllers\Admin;
 
-use Modules\Core\Http\Controllers\Admin\AdminBaseController;
+use Core\Http\Controllers\Admin\AdminBaseController;
 
 abstract class BaseUserModuleController extends AdminBaseController
 {

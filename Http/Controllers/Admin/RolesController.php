@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Http\Controllers\Admin;
+<?php namespace \User\Http\Controllers\Admin;
 
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;

@@ -1,11 +1,10 @@
-<?php namespace User\Repositories\Sentinel;
+<?php namespace User\Repositories\Sentry;
 
-use Cartalyst\Sentinel\Laravel\Facades\Activation;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use User\Exceptions\UserNotFoundException;
+
+use Cartalyst\Sentry\Facades\Laravel\Sentry;
 use User\Repositories\UserRepository;
 
-class SentinelUserRepository implements UserRepository
+class SentryUserRepository implements UserRepository
 {
     /**
      * @var \Modules\User\Entities\User
@@ -16,19 +15,13 @@ class SentinelUserRepository implements UserRepository
      */
     protected $role;
 
-    public function __construct()
-    {
-        $this->user = Sentinel::getUserRepository()->createModel();
-        $this->role = Sentinel::getRoleRepository()->createModel();
-    }
-
     /**
      * Returns all the users
      * @return object
      */
     public function all()
     {
-        return $this->user->all();
+        return Sentry::findAllUsers();
     }
 
     /**
@@ -38,7 +31,7 @@ class SentinelUserRepository implements UserRepository
      */
     public function create(array $data)
     {
-        return $this->user->create((array) $data);
+        return Sentry::createUser($data);
     }
 
     /**
@@ -49,14 +42,14 @@ class SentinelUserRepository implements UserRepository
      */
     public function createWithRoles($data, $roles)
     {
-        $user = $this->create((array) $data);
+        $user = Sentry::createUser($data);
 
         if (!empty($roles)) {
-            $user->roles()->attach($roles);
+            $adminGroup = Sentry::findGroupByName($roles);
+            $user->addGroup($adminGroup);
         }
 
-        $activation = Activation::create($user);
-        Activation::complete($user, $activation->code);
+        $user->attemptActivation($user->getActivationCode());
     }
 
     /**
@@ -66,7 +59,7 @@ class SentinelUserRepository implements UserRepository
      */
     public function find($id)
     {
-        return $this->user->find($id);
+        return Sentry::findUserById($id);
     }
 
     /**
@@ -77,7 +70,8 @@ class SentinelUserRepository implements UserRepository
      */
     public function update($user, $data)
     {
-        return $this->user->update($user, $data);
+        $user = $user->update($data);
+        return $user->save();
     }
 
     /**
@@ -89,13 +83,15 @@ class SentinelUserRepository implements UserRepository
      */
     public function updateAndSyncRoles($userId, $data, $roles)
     {
-        $user = $this->user->find($userId);
+        $user = Sentry::findUserById($userId);
 
-        $user = $user->fill($data);
+        $user = $user->update($data);
         $user->save();
 
         if (!empty($roles)) {
-            $user->roles()->sync($roles);
+            $adminGroup = Sentry::findGroupByName($roles);
+            $user->removeGroup();
+            $user->addGroup($adminGroup);
         }
     }
 
@@ -107,7 +103,7 @@ class SentinelUserRepository implements UserRepository
      */
     public function delete($id)
     {
-        if ($user = $this->user->find($id)) {
+        if ($user = Sentry::findUserById($id)) {
             return $user->delete();
         };
 
@@ -121,6 +117,6 @@ class SentinelUserRepository implements UserRepository
      */
     public function findByCredentials(array $credentials)
     {
-        return Sentinel::findByCredentials($credentials);
+        return Sentry::findUserByCredentials($credentials);
     }
 }

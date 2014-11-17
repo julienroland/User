@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Database\Seeders;
+<?php namespace User\Database\Seeders\Sentinel;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Database\Seeder;

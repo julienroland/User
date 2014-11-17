@@ -1,7 +1,8 @@
-<?php namespace Modules\User\Database\Seeders;
+<?php namespace User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class UserDatabaseSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class UserDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call("Modules\\User\\Database\\Seeders\\SentryGroupSeedTableSeeder");
+        $this->call("User\\Database\\Seeders\\" . Config::get('User::userdriver.driver') . "\\SentryGroupSeedTableSeeder");
     }
 
 }

@@ -1,13 +1,9 @@
-<?php namespace User\Repositories\Sentinel;
+<?php namespace User\Repositories\Sentry;
 
-use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
-use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
-use Cartalyst\Sentinel\Laravel\Facades\Activation;
-use Cartalyst\Sentinel\Laravel\Facades\Reminder;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Cartalyst\Sentry\Facades\Laravel\Sentry;
 use Core\Contracts\Authentication;
 
-class SentinelAuthentication implements Authentication
+class SentryAuthentification implements Authentication
 {
     /**
      * Authenticate a user
@@ -17,17 +13,12 @@ class SentinelAuthentication implements Authentication
      */
     public function login(array $credentials, $remember = false)
     {
-        try {
-            if (Sentinel::authenticate($credentials, $remember)) {
-                return false;
-            }
-            return 'Invalid login or password.';
-        } catch (NotActivatedException $e) {
-            return 'Account not yet validated. Please check your email.';
-        } catch (ThrottlingException $e) {
-            $delay = $e->getDelay();
-            return "Your account is blocked for {$delay} second(s).";
+
+        if (Sentry::authenticate($credentials, $remember)) {
+            return false;
         }
+        return 'Invalid login or password.';
+
     }
 
     /**
@@ -37,7 +28,7 @@ class SentinelAuthentication implements Authentication
      */
     public function register(array $user)
     {
-        return Sentinel::getUserRepository()->create((array) $user);
+        return Sentry::register($user);
     }
 
     /**
@@ -57,7 +48,7 @@ class SentinelAuthentication implements Authentication
      */
     public function logout()
     {
-        return Sentinel::logout();
+        return Sentry::logout();
     }
 
     /**
@@ -68,9 +59,9 @@ class SentinelAuthentication implements Authentication
      */
     public function activate($userId, $code)
     {
-        $user = Sentinel::findById($userId);
+        $user = Sentry::findUserById($userId);
 
-        return Activation::complete($user, $code);
+        return $user->attemptActivation($code);
     }
 
     /**
@@ -80,7 +71,7 @@ class SentinelAuthentication implements Authentication
      */
     public function createActivation($user)
     {
-        return Activation::create($user);
+        return $user->getResetPasswordCode();
     }
 
     /**
@@ -90,9 +81,7 @@ class SentinelAuthentication implements Authentication
      */
     public function createReminderCode($user)
     {
-        $reminder = Reminder::exists($user) ?: Reminder::create($user);
-
-        return $reminder->code;
+        return $user->getResetPasswordCode();
     }
 
     /**
@@ -104,7 +93,7 @@ class SentinelAuthentication implements Authentication
      */
     public function completeResetPassword($user, $code, $password)
     {
-        return Reminder::complete($user, $code, $password);
+        return $user->attemptResetPassword($code, $password);
     }
 
     /**
@@ -114,7 +103,7 @@ class SentinelAuthentication implements Authentication
      */
     public function hasAccess($permission)
     {
-        return Sentinel::hasAccess($permission);
+        return Sentry::hasAccess($permission);
     }
 
     /**
@@ -123,6 +112,6 @@ class SentinelAuthentication implements Authentication
      */
     public function check()
     {
-        return Sentinel::check();
+        return Sentry::check();
     }
 }

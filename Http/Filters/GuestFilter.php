@@ -1,4 +1,4 @@
-<?php namespace Modules\User\Http\Filters;
+<?php namespace User\Http\Filters;
 
 use Illuminate\Routing\Redirector;
 use Modules\Core\Contracts\Authentication;
